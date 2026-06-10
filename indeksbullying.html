@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Anti Bullying - Kelompok Flashdisk</title>
+    <style>
+        :root {
+            --primary: #9b51e0; /* Ungu */
+            --secondary: #4a90e2; /* Biru */
+            --accent: #e051b8; /* Pink */
+            --bg-gradient: linear-gradient(135deg, #1a0933 0%, #0d1b2a 100%);
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --text-color: #f1f3f5;
+            --text-muted: #b0b8c4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+
+        /* Lock Screen Password */
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c0b4e 0%, #0a1128 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: all 0.5s ease;
+        }
+
+        .lock-container {
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .lock-container h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            -webkit-background-clip-: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .lock-images-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .lock-logo {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(155, 81, 224, 0.3);
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(224, 81, 184, 0.4);
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .lock-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Header & Navigasi */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 5%;
+            background: rgba(26, 9, 51, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 10px;
+        }
+
+        nav ul li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        nav ul li a.active {
+            background: linear-gradient(45deg, rgba(155, 81, 224, 0.3), rgba(74, 144, 226, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .page-section.active-section {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HOME STYLE */
+        .hero-banner {
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .group-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(224, 81, 184, 0.2);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero-banner h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #fff, var(--secondary));
+            -webkit-background-clip-: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slogan {
+            font-size: 22px;
+            font-style: italic;
+            color: #e0aaff;
+            margin-bottom: 30px;
+        }
+
+        .home-logos {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .logo-card {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            min-width: 220px;
+        }
+
+        .logo-card-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .showcase-img-container {
+            width: 100%;
+            height: 380px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .showcase-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* SUB-MENU MATERI VERTIKAL PENUH HALAMAN */
+        .sub-menu-full-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .sub-btn-full {
+            width: 100%;
+            padding: 20px;
+            background: #ffffff;
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: lowercase;
+            border: 2px solid #4a5a6a;
+            border-radius: 40px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .sub-btn-full:hover, .sub-btn-full.active-sub {
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            color: #ffffff;
+            border-color: transparent;
+            transform: scale(1.01);
+            box-shadow: 0 6px 20px rgba(224, 81, 184, 0.4);
+        }
+
+        /* Kotak Tampilan Konten Bacaan */
+        .materi-display-box {
+            display: none;
+            padding: 40px;
+            margin-top: 20px;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .materi-header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .materi-tag {
+            padding: 5px 14px;
+            background: rgba(74, 144, 226, 0.2);
+            color: var(--secondary);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Desain Frame Gambar Setiap Materi */
+        .materi-img-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 25px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none;
+        }
+
+        .materi-img-container img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #fff;
+            color: #1a0933;
+        }
+
+        /* PROFIL & BANTUAN STYLE */
+        .profile-bantuan-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+        }
+
+        .school-info {
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .team-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .member-card {
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+        }
+
+        .wa-btn {
+            width: 100%;
+            padding: 14px;
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        @media (max-width: 850px) {
+            .showcase-grid, .profile-bantuan-grid, .team-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen">
+        <div class="lock-container glass">
+            <div class="lock-images-container">
+                <img src="logosekolah.png.png" alt="Logo SMKN 36 Jakarta" class="lock-logo">
+                <img src="logojurusan.png.png" alt="Logo TKJ SMKN 36" class="lock-logo">
+            </div>
+            <h2>Sistem Berbasis Anti-Bullying</h2>
+            <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px;">Kelompok Flashdisk - SMK Negeri 36 Jakarta</p>
+            <div class="input-group">
+                <input type="password" id="web-password" placeholder="Masukkan Password Web...">
+                <div id="error-message" class="error-msg">Password salah! Silakan periksa kembali.</div>
+            </div>
+            <button class="lock-btn" onclick="checkPassword()">Buka Akses Web</button>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        <header>
+            <div class="logo-section">
+                <img src="logosekolah.png.png" alt="Logo SMKN 36" style="width:40px; height:40px; object-fit:contain;">
+                <div style="font-weight: bold; letter-spacing: 1px;">STOP BULLYING</div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" id="nav-home" class="active" onclick="switchTab('home')">Home</a></li>
+                    <li><a href="#" id="nav-materi" onclick="switchTab('materi')">Materi</a></li>
+                    <li><a href="#" id="nav-profil" onclick="switchTab('profil')">Profil &amp; Bantuan</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="container">
+            
+            <div id="section-home" class="page-section active-section">
+                <div class="hero-banner glass">
+                    <span class="group-badge">Kelompok Flashdisk</span>
+                    <h1>ANTI BULLYING SYSTEM</h1>
+                    <p class="slogan">"Words can heal or words can hurt"</p>
+                    
+                    <div class="home-logos">
+                        <div class="logo-card glass">
+                            <img src="logosekolah.png.png" alt="Logo SMKN 36" class="logo-card-img">
+                            <div style="text-align: left;">
+                                <div style="font-size: 11px; color: var(--text-muted);">Sekolah</div>
+                                <div style="font-weight: bold; font-size: 13px;">SMK Negeri 36</div>
+                            </div>
+                        </div>
+                        <div class="logo-card glass">
+                            <img src="logojurusan.png.png" alt="Logo TKJ SMKN 36" class="logo-card-img">
+                            <div style="text-align: left;">
+                                <div style="font-size: 11px; color: var(--text-muted);">Kompetensi</div>
+                                <div style="font-weight: bold; font-size: 13px;">TKJ SMK 36</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-grid">
+                    <div class="showcase-img-container">
+                        <img src="bullyone.png.jpeg" alt="Poster Stop Bullying">
+                    </div>
+                    <div>
+                        <h2 style="color: #fff; margin-bottom: 15px;">Kenali, Cegah, dan Laporkan Perundungan</h2>
+                        <p style="color: var(--text-muted); line-height: 1.6;">
+                            Selamat datang di platform informasi Anti-Bullying yang dikembangkan oleh Kelompok Flashdisk. Kami berkomitmen menciptakan lingkungan sekolah ramah, inklusif, dan aman baik secara fisik maupun di ranah digital (cyberbullying). Mari bersama-sama hentikan rantai kekerasan mental di sekeliling kita.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-materi" class="page-section">
+                
+                <div id="materi-menu-wrapper">
+                    <h2 style="margin-bottom: 30px; color:#fff; font-size: 28px; text-transform: uppercase; letter-spacing: 1px;">Pembahasan Bullying</h2>
+                    <div class="sub-menu-full-container" id="sub-menu-materi">
+                        <button class="sub-btn-full" id="sub-definisi" onclick="showKonten('definisi')">definisi</button>
+                        <button class="sub-btn-full" id="sub-tujuan" onclick="showKonten('tujuan')">tujuan</button>
+                        <button class="sub-btn-full" id="sub-bullying" onclick="showKonten('bullying')">bullying</button>
+                        <button class="sub-btn-full" id="sub-evolusi" onclick="showKonten('evolusi')">evolusi digital (sejarah)</button>
+                        <button class="sub-btn-full" id="sub-bahaya" onclick="showKonten('bahaya')">bahaya cyber</button>
+                        <button class="sub-btn-full" id="sub-mental" onclick="showKonten('mental')">kesehatan mental</button>
+                        <button class="sub-btn-full" id="sub-hukum" onclick="showKonten('hukum')">payung hukum</button>
+                    </div>
+                </div>
+
+                <div id="materi-display-box" class="glass materi-display-box">
+                    <button class="back-btn" onclick="backToMateriMenu()">&larr; Kembali ke Daftar Materi</button>
+                    
+                    <div class="materi-header-area">
+                        <h3 id="materi-title" style="color: #fff; font-size: 24px; text-transform: uppercase;">Judul</h3>
+                        <span class="materi-tag" id="materi-mapel-tag">Materi Sistem</span>
+                    </div>
+
+                    <div class="materi-img-container" id="materi-img-frame">
+                        <img id="materi-image" src="" alt="Gambar Pendukung Materi">
+                    </div>
+
+                    <p id="materi-body" style="line-height: 1.8; color: #fff; font-size: 16px; white-space: pre-line;"></p>
+                </div>
+
+            </div>
+
+            <div id="section-profil" class="page-section">
+                <div class="profile-bantuan-grid">
+                    <div class="glass" style="padding: 30px;">
+                        <h3 style="color:#fff; margin-bottom:20px;">Profil Tim Pengembang</h3>
+                        <div class="school-info">
+                            <img src="logosekolah.png.png" alt="Logo SMKN 36" style="width: 40px; height: 40px; object-fit: contain;">
+                            <div>
+                                <h4 style="color:#fff;">SMK Negeri 36 Jakarta</h4>
+                                <p style="font-size:13.5px; color:var(--text-muted);">Siswa Kompetensi Keahlian Teknik Komputer &amp; Jaringan (TKJ)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="team-list">
+                            <div class="member-card">
+                                <div class="member-avatar">JA</div>
+                                <div>
+                                    <h4 style="color:#fff; font-size:14px;">Jescika Amalia</h4>
+                                    <p style="color:var(--accent); font-size:12px;">Tim Flashdisk</p>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <div class="member-avatar">RM</div>
+                                <div>
+                                    <h4 style="color:#fff; font-size:14px;">Rahmadini</h4>
+                                    <p style="color:var(--accent); font-size:12px;">Tim Flashdisk</p>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <div class="member-avatar">NA</div>
+                                <div>
+                                    <h4 style="color:#fff; font-size:14px;">Nabila Asyila Putri</h4>
+                                    <p style="color:var(--accent); font-size:12px;">Tim Flashdisk</p>
+                                </div>
+                            </div>
+                            <div class="member-card">
+                                <div class="member-avatar">NS</div>
+                                <div>
+                                    <h4 style="color:#fff; font-size:14px;">Nadia Selsabilla</h4>
+                                    <p style="color:var(--accent); font-size:12px;">Tim Flashdisk</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass" style="padding: 30px;">
+                        <h3 style="color:#fff; margin-bottom:15px;">Layanan Bantuan Pengaduan</h3>
+                        <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:20px;">
+                            Laporkan kejadian perundungan di sekitar sekolah ke admin layanan secara instan melalui sistem integrasi WhatsApp.
+                        </p>
+                        <div class="form-group">
+                            <label>Nama Pengadu (Bisa samaran)</label>
+                            <input type="text" id="wa-name" placeholder="Masukkan nama Anda...">
+                        </div>
+                        <div class="form-group">
+                            <label>Pesan Laporan Kejadian</label>
+                            <textarea id="wa-msg" rows="4" placeholder="Tulis rincian kronologi bullying..."></textarea>
+                        </div>
+                        <button class="wa-btn" onclick="sendLaporanWhatsApp()">
+                            Kirim Pengaduan ke WhatsApp Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            &copy; 2026 Kelompok Flashdisk - SMK Negeri 36 Jakarta. All Rights Reserved.<br>
+            <span style="color: var(--accent); font-size: 11px;">"Words can heal or words can hurt"</span>
+        </footer>
+    </div>
+
+    <script>
+        const PASSWORD_AKSES = "smk36hebat"; 
+
+        const databaseMateri = {
+            definisi: {
+                judul: "Definisi Bullying",
+                teks: "Secara mendasar, bullying atau perundungan dapat didefinisikan sebagai sebuah bentuk perilaku agresif, negatif, dan destruktif yang dilakukan oleh seseorang atau sekelompok orang secara sengaja. Kata kunci utama dalam fenomena ini adalah \"kesengajaan\" dan \"pengulangan\", yang berarti aksi tersebut bukanlah sebuah ketidaksengajaan atau konflik spontan satu waktu, melainkan tindakan yang memang direncanakan untuk menyakiti, mengintimidasi, atau membuat korban merasa tidak berdaya, dan biasanya terjadi berkali-kali dalam kurun waktu tertentu.\n\nHal krusial yang membedakan bullying dengan candaan atau perselisihan biasa adalah adanya ketidakseimbangan kekuatan (imbalance of power) yang sangat timpang antara pelaku dan korban. Ketidakseimbangan ini tidak selalu berbicara tentang ukuran atau kekuatan fisik semata. Pelaku bullying sering kali menggunakan berbagai instrumen \"kekuatan\" lain untuk mendominasi korbannya, seperti:\n\n- Status Sosial dan Popularitas: Pelaku merasa memiliki pengaruh yang lebih besar di suatu lingkungan.\n- Kekuatan Fisik atau Usia: Senioritas atau postur tubuh yang digunakan untuk mengintimidasi.\n- Kekuasaan dan Akses Informasi: Pemanfaatan posisi tertentu atau kepemilikan informasi sensitif.\n\nMelalui ketimpangan tersebut, pelaku sengaja menciptakan sebuah ruang di mana korban merasa terisolasi, ketakutan, dan berada dalam posisi yang sangat sulit untuk melakukan pembelaan diri (defenseless).",
+                gambar: "bully1.png.jfif" 
+            },
+            tujuan: {
+                judul: "Tujuan Program",
+                teks: "Tindakan ini bertujuan untuk:\n\n1. Meningkatkan Kesadaran Warga Sekolah, menumbuhkan pemahaman yang mendalam bagi siswa, guru, dan staf sekolah mengenai bahaya, dampak psikologis, serta berbagai bentuk perundungan, baik verbal, fisik, maupun cyberbullying di media sosial.\n\n2. Memanfaatkan Teknologi Digital untuk Edukasi Positif, mengoptimalkan infrastruktur dan platform digital sekolah (seperti media sosial, website, atau mading digital) sebagai sarana kampanye yang kreatif, interaktif, dan edukatif dalam menyebarkan pesan perdamaian.\n\n3. Membentuk Agen Perubahan, mendorong siswa untuk berani bersuara dan mengambil tindakan yang tepat saat melihat tindakan perundungan, sehingga tidak hanya menjadi penonton pasif.\n\n4. Menciptakan Lingkungan Sekolah yang Aman dan Inklusif, mendukung terciptanya ekosistem Smart Digital School yang sehat secara mental, dimana setiap siswa merasa dihargai, aman dari intimidasi, dan dapat berkembang secara optimal.\n\n5. Memenuhi Tugas Akhir Proyek, sebagai bentuk pertanggungjawaban tertulis atas perencanaan, pelaksanaan, dan evaluasi dari seluruh rangkaian kegiatan kampanye Anti-Bullying yang telah kami laksanakan.",
+                gambar: "bully3.png.jpeg"
+            },
+            bullying: {
+                judul: "Dampak Bahaya Bullying",
+                teks: "Bullying atau perundungan itu sebenarnya bentuk kekerasan nyata. Dampaknya gak main-main; bisa merusak mental, menghancurkan rasa percaya diri, dan meninggalkan trauma mendalam yang bahkan bisa terbawa sampai seseorang beranjak dewasa. Sayangnya, sering kali kita menganggap kejadian ini sebagai hal yang biasa atau mendingan diam aja karena gak mau ikut campur. Padahal, saat kita memilih untuk diam atau menormalisasi tindakan tersebut, secara tidak langsung kita sebenarnya ikut melanggengkan dan memperpanjang lingkaran kekerasan itu sendiri.",
+                gambar: "bully4.png"
+            },
+            evolusi: {
+                judul: "Evolusi Digital (Sejarah)",
+                teks: "Sejak tahun 2022 hingga sekarang, pola perundungan (bullying) mengalami perubahan yang cukup signifikan seiring dengan pesatnya perkembangan teknologi dan penggunaan media sosial. Jika dahulu perundungan lebih sering terjadi secara langsung melalui kekerasan fisik, ejekan, atau intimidasi verbal di lingkungan sekolah maupun pergaulan, kini bentuk perundungan semakin banyak terjadi di ruang digital.\n\nPerubahan tersebut melahirkan fenomena cyberbullying, yaitu tindakan perundungan yang dilakukan melalui media sosial, aplikasi pesan, maupun platform online lainnya. Pelaku dapat dengan mudah menyebarkan hinaan, ancaman, atau komentar negatif kepada korban tanpa harus bertemu secara langsung. Akibatnya, korban dapat mengalami tekanan psikologis yang lebih besar karena perundungan dapat terjadi kapan saja dan menjangkau lebih banyak orang.",
+                gambar: "berita.png.jpeg"
+            },
+            bahaya: {
+                judul: "Bahaya Cyberbullying",
+                teks: "Perkembangan teknologi dan media sosial telah membuat perundungan menjadi lebih berbahaya karena tidak lagi terbatas oleh ruang dan waktu. Pelaku dapat melakukan perundungan secara anonim melalui berbagai platform digital, sementara korban dapat menerima hinaan, ancaman, atau intimidasi kapan saja, bahkan saat berada di rumah.\n\nSelain itu, konflik yang terjadi di dunia maya sering kali berlanjut ke dunia nyata dan dapat memicu tindakan kekerasan secara langsung. Akibatnya, dampak yang dirasakan korban menjadi lebih berat, mulai dari menurunnya rasa percaya diri, stres, kecemasan, hingga gangguan dalam kegiatan belajar dan kehidupan sosial. Oleh karena itu, diperlukan kesadaran dan kerja sama dari semua pihak untuk mencegah serta menghentikan perundungan, baik di lingkungan nyata maupun di dunia digital.",
+                gambar: "cyber.png.jpeg"
+            },
+            mental: {
+                judul: "Kesehatan Mental",
+                teks: "Bullying, terutama yang terjadi di dunia digital (cyberbullying), punya dampak yang sangat serius bagi kesehatan mental seseorang. Bayangkan saja, komentar jahat, penyebaran rumor palsu, ejekan, hingga intimidasi yang muncul di media sosial bisa terus-menerus menghantui korban. Hal ini memicu stres berat, kecemasan, rasa takut, dan secara perlahan meruntuhkan rasa percaya diri mereka.\n\nDampaknya, korban sering kali merasa tidak aman, malu, dan kehilangan kenyamanan saat harus berinteraksi dengan orang lain. Jika perundungan ini dibiarkan terus terjadi dalam jangka panjang, efeknya bakal semakin fatal. Korban akan mulai kesulitan fokus belajar, kehilangan motivasi untuk menjalani aktivitas sehari-hari, hingga akhirnya menarik diri dari lingkungan sosial karena merasa ditolak oleh dunia luar.\n\nMelihat dampak yang begitu merusak, kita tidak bisa tinggal diam. Perlu ada kerja sama yang kuat antara keluarga, sekolah, dan masyarakat untuk bersama-sama menciptakan lingkungan yang aman, positif, dan saling menghargai. Hanya dengan begitu kita bisa mencegah dan menghentikan mata rantai perundungan ini.",
+                gambar: "tujuan.png"
+            },
+            hukum: {
+                judul: "Payung Hukum",
+                teks: "Tindakan bullying atau perundungan sebenarnya bukan lagi sekadar masalah kenakalan biasa, melainkan sudah masuk dalam kategori pelanggaran Hak Asasi Manusia (HAM) yang serius. Hal ini karena bullying secara nyata merenggut rasa keadilan dan keamanan yang seharusnya dimiliki oleh setiap individu. Di dalam konstitusi negara kita, yaitu UUD 1945, landasan hukum yang menentang keras tindakan ini sudah diatur dengan sangat jelas dalam beberapa pasal:\n\n- Pasal 28G Ayat (1): Setiap orang berhak atas perlindungan diri pribadi, keluarga, kehormatan, martabat, dan harta benda, serta berhak atas rasa aman.\n- Pasal 28I Ayat (2): Menyatakan bahwa setiap orang berhak bebas dari perlakuan yang bersifat diskriminatif.\n- Pasal 31: Mengatur tentang hak setiap warga negara untuk mendapatkan pendidikan.\n\nJika Korban/Pelaku adalah Anak-Anak: Penanganannya wajib memperhatikan ketentuan pidana dalam UU Perlindungan Anak dengan pendekatan sistem peradilan pidana anak yang mengutamakan rehabilitasi (diversi).\n\nJika Dilakukan di Media Sosial (Cyberbullying): Pelaku dapat dijerat menggunakan UU ITE (Informasi dan Transaksi Elektronik) terkait penyebaran konten bermuatan penghinaan, pencemaran nama baik, atau ancaman kekerasan.",
+                gambar: "hukum.png" 
+            }
+        };
+
+        function checkPassword() {
+            const inputPw = document.getElementById('web-password').value;
+            const errMsg = document.getElementById('error-message');
+            
+            if(inputPw === PASSWORD_AKSES) {
+                document.getElementById('lock-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('lock-screen').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                }, 500);
+            } else {
+                errMsg.style.display = 'block';
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-section').forEach(sec => {
+                sec.classList.remove('active-section');
+            });
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            document.getElementById(`section-${tabId}`).classList.add('active-section');
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+            
+            if(tabId === 'materi') {
+                backToMateriMenu();
+            }
+        }
+
+        function showKonten(materiKey) {
+            const data = databaseMateri[materiKey];
+            if(!data) return;
+
+            document.getElementById('materi-menu-wrapper').style.display = 'none';
+            
+            const displayBox = document.getElementById('materi-display-box');
+            document.getElementById('materi-title').innerText = data.judul;
+            document.getElementById('materi-body').innerText = data.teks;
+            
+            const imgFrame = document.getElementById('materi-img-frame');
+            const imgTag = document.getElementById('materi-image');
+            
+            if(data.gambar) {
+                imgTag.src = data.gambar;
+                imgFrame.style.display = 'block';
+            } else {
+                imgFrame.style.display = 'none';
+            }
+
+            displayBox.style.display = 'block';
+        }
+
+        function backToMateriMenu() {
+            document.getElementById('materi-display-box').style.display = 'none';
+            document.getElementById('materi-menu-wrapper').style.display = 'block';
+        }
+
+        function sendLaporanWhatsApp() {
+            const nama = document.getElementById('wa-name').value || "Anonim";
+            const pesan = document.getElementById('wa-msg').value;
+            
+            if(!pesan) {
+                alert("Harap tuliskan isi laporan pengaduan terlebih dahulu!");
+                return;
+            }
+
+            const nomorAdmin = "6281913219976"; // Silakan ganti dengan nomor WhatsApp admin tujuan
+            const formatTeks = encodeURIComponent(`*LAPORAN PENGADUAN ANTI-BULLYING*\n\n*Nama Pengadu:* ${nama}\n*Laporan Kejadian:* ${pesan}`);
+            window.open(`https://api.whatsapp.com/send?phone=${nomorAdmin}&text=${formatTeks}`, '_blank');
+        }
+    </script>
+</body>
+</html>
